@@ -1,28 +1,18 @@
 import React, {Component} from "react";
 
-export class Message extends Component {
-  constructor () {
-    super();
-  }
-  render () {
+export function Message (props) {
     return (
         <div className="message">
-          <span className="message-username">Anonymous1</span>
-          <span className="message-content">I won't be impressed with technology until I can download food.</span>
+          <span className="message-username">{props.username}</span>
+          <span className="message-content">{props.content}</span>
         </div>)
-  }
-
 }
-export class Notification extends Component {
-  constructor() {
-    super();
-  }
-  render() {
+
+export function Notification (props) {
     return (
         <div className="message system">
-          Anonymous1 changed their name to nomnom.
+          {props.content}
         </div>)
-  }
 }
 
 //export default {Notification, Message}
