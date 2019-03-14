@@ -3,6 +3,7 @@ import {Message, Notification, Picture} from "./message.jsx";
 
 function MessageList (props) {
     const messages = props.messageData.map((message) => {
+      //Checks whether message type is Notification, Picture or message. Default is message
       switch (message.type) {
         case 'postNotification' :
           return (<Notification key={message.id} message={message}/>);
