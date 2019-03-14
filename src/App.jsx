@@ -9,8 +9,10 @@ class App extends Component {
     super();
     this.state = {
       loading: true,
-      currentUser: {name: "Darren"},
-      messageData: []
+      currentUser: {name: ""},
+      messageData: [],
+      usersOnline: 0,
+      color: ""
     };
     this.SendMessage = this.SendMessage.bind(this);
     this.SendNotification = this.SendNotification.bind(this);
@@ -21,10 +23,26 @@ class App extends Component {
     };
 
     this.socket.onmessage = (message) => {
-      let newMessageData = this.state.messageData;
-      newMessageData.push(JSON.parse(message.data));
-      this.setState((previousState) => ({messageData: newMessageData}));
-    };
+      const newMessage = JSON.parse(message.data);
+      switch (newMessage.type) {
+        case 'numUsers' :
+          this.setState({usersOnline: newMessage.users});
+          break;
+        case 'colorAssignment' :
+          this.setState({color: newMessage.color});
+          break;
+        case 'postMessage' :
+        case 'postNotification' :
+        case 'postPicture' :
+          let newMessageData = this.state.messageData;
+          newMessageData.push(newMessage);
+          this.setState((previousState) => ({messageData: newMessageData}));
+          break;
+        default :
+          console.log('Should not be here');
+          break;
+        }
+      };
 
     setTimeout( () => {
       this.setState({loading:false});
@@ -42,7 +60,13 @@ class App extends Component {
       type: "incomingMessage",
       content: text,
       username: user,
+      color: this.state.color
     };
+    let url = newMessage.content.slice(newMessage.content.length-3);
+    if (url === 'png' || url === 'gif' || url === 'jpg') {
+      newMessage.type = 'incomingPicture';
+    }
+    //if (newMessage.content.splice(newMessage.content.length-4))
     this.socket.send(JSON.stringify(newMessage));
   }
 
@@ -59,9 +83,9 @@ class App extends Component {
   render() {
     return (
       <div>
-        <NavBar />
+        <NavBar usersOnline={this.state.usersOnline}/>
         {this.state.loading ? <h1>Loading........</h1> : <MessageList messageData={this.state.messageData}/>}
-        <ChatBar currentUser={this.state.currentUser} MessageType={this.MessageType} UserType={this.UserType}/>
+        <ChatBar currentUser={this.state.currentUser} SendMessage={this.SendMessage} SendNotification={this.SendNotification}/>
       </div>
     );
   }

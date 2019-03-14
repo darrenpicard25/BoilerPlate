@@ -8,18 +8,18 @@ class Chatbar extends Component {
     const keyPressText = (event) => {
       if(event.keyCode === 13) {
         let user = (this.props.currentUser.name ? this.props.currentUser.name : "Anonymous");
-        this.props.MessageType(event.target.value, user);
+        this.props.SendMessage(event.target.value, user);
         event.target.value = "";
       }
     };
     const keyPressUser = (event) => {
       if(event.keyCode === 13) {
-        this.props.UserType(event.target.value);
+        this.props.SendNotification(event.target.value);
       }
     };
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" defaultValue={this.props.currentUser.name ? this.props.currentUser.name : "Anonymous"} onKeyUp={keyPressUser} />
+        <input className="chatbar-username" placeholder="Your Name (Optional)" onKeyUp={keyPressUser} />
         <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyUp={keyPressText} />
       </footer>
           )
